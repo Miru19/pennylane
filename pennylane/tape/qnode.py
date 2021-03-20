@@ -1064,9 +1064,9 @@ def metric_tensor(_qnode, diag_approx=False, only_construct=False):
 
     def _metric_tensor_fn(*args, **kwargs):
         jac = qml.math.stack(_get_classical_jacobian(_qnode)(*args, **kwargs))
-        jac = qml.math.reshape(jac, [_qnode.qtape.num_params, -1])
+        jac_flat = qml.math.reshape(jac, [_qnode.qtape.num_params, -1])
 
-        wrt, perm = np.nonzero(qml.math.toarray(jac))
+        wrt, perm = np.nonzero(qml.math.toarray(jac_flat))
         perm = np.argsort(np.argsort(perm))
 
         _qnode.construct(args, kwargs)
@@ -1083,9 +1083,11 @@ def metric_tensor(_qnode, diag_approx=False, only_construct=False):
         res = [t.execute(device=_qnode.device) for t in metric_tensor_tapes]
         mt = processing_fn(res)
 
-        # permute rows ad columns
-        mt = qml.math.gather(mt, perm)
-        mt = qml.math.gather(qml.math.T(mt), perm)
+        if _qnode.diff_options["method"] == "backprop":
+            jac = qml.math.gather(jac, wrt)
+
+        mt = qml.math.tensordot(mt, jac, axes=[-1, 0])
+        mt = qml.math.tensordot(jac, mt, axes=[0, 0])
         return mt
 
     return _metric_tensor_fn

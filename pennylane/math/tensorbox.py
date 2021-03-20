@@ -352,7 +352,8 @@ class TensorBox(abc.ABC):
           and the second-to-last dimension of the second array is returned.
 
         Args:
-            other (tensor_like): the tensor-like object to right-multiply the TensorBox by
+            x (tensor_like): input tensor
+            y (tensor_like): input tensor
         """
 
     @abc.abstractmethod
@@ -556,6 +557,29 @@ class TensorBox(abc.ABC):
 
                 [[3, 3],
                  [4, 3]]])
+        """
+
+    @staticmethod
+    @abc.abstractmethod
+    def tensordot(x, y, axes):
+        """Returns the tensor dot product along the given axes.
+
+        Args:
+            x (tensor_like): input tensor
+            y (tensor_like): input tensor
+            axes (int or Sequence[Sequence[int], Sequence[int]]): If an integer :math:`N`, sum of the last :math:`N`
+                axes of ``tensor1`` and the first :math:`N` axes of ``tensor2``. If a sequence,
+                the first sequence applies to the axes of ``tensor1`` and the second sequence
+                applies to the axis of ``tensor2``.
+
+        **Example**
+
+        >>> a = qml.math.TensorBox(torch.randint(2, 10, (3, 5, 4, 6)))
+        >>> b = qml.math.TensorBox(np.random.random([6, 4, 5, 3]))
+        >>> a.tensordot(a, b, axes=[[2, 1, 3], [1, 2, 0]])
+        TensorBox: tensor([[291.1716, 305.8815, 311.6037],
+                [326.4408, 320.9325, 324.9650],
+                [302.4458, 293.8886, 311.4482]], dtype=torch.float64)
         """
 
     @staticmethod

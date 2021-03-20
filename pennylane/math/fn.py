@@ -592,6 +592,20 @@ def marginal_prob(prob, axis):
     return flatten(prob)
 
 
+def tensordot(tensor1, tensor2, axes):
+    """Returns the tensor dot product along the given axes.
+
+    Args:
+        tensor1 (tensor_like): input tensor
+        tensor2 (tensor_like): input tensor
+        axes (int or Sequence[Sequence[int], Sequence[int]]): If an integer :math:`N`, sum of the last :math:`N`
+            axes of ``tensor1`` and the first :math:`N` axes of ``tensor2``. If a sequence,
+            the first sequence applies to the axes of ``tensor1`` and the second sequence
+            applies to the axis of ``tensor2``.
+    """
+    return _get_multi_tensorbox([tensor1, tensor2]).tensordot(tensor1, tensor2, axes=axes, wrap_output=False)
+
+
 def toarray(tensor):
     """Returns the tensor as a NumPy ``ndarray``. No copying
     is performed; the tensor and the returned array share the

@@ -190,7 +190,7 @@ class QNGOptimizer(GradientDescentOptimizer):
                 self.metric_tensor = qml.metric_tensor(qnode, diag_approx=self.diag_approx)(x)
             else:
                 self.metric_tensor = metric_tensor_fn(x)
-            self.metric_tensor += self.lam * np.identity(self.metric_tensor.shape[0])
+            self.metric_tensor += self.lam
 
         # The QNGOptimizer.step does not permit passing an external gradient function.
         # Autograd will always calculate the gradient and `forward` will never be `None`.
@@ -234,5 +234,6 @@ class QNGOptimizer(GradientDescentOptimizer):
         """
         grad_flat = np.array(list(_flatten(grad)))
         x_flat = np.array(list(_flatten(x)))
-        x_new_flat = x_flat - self._stepsize * np.linalg.solve(self.metric_tensor, grad_flat)
+        mt_flat = self.metric_tensor.reshape(x_flat.shape[0], x_flat.shape[0])
+        x_new_flat = x_flat - self._stepsize * np.linalg.solve(mt_flat, grad_flat)
         return unflatten(x_new_flat, x)

@@ -64,6 +64,7 @@ from .fn import (
     squeeze,
     sum_ as sum,
     take,
+    tensordot,
     toarray,
     where,
 )

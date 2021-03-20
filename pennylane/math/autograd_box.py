@@ -118,5 +118,11 @@ class AutogradBox(qml.math.TensorBox):
 
     @staticmethod
     @wrap_output
+    def tensordot(x, y, axes):
+        x, y = AutogradBox.unbox_list([x, y])
+        return np.tensordot(x, y, axes=axes)
+
+    @staticmethod
+    @wrap_output
     def where(condition, x, y):
         return np.where(condition, *AutogradBox.unbox_list([x, y]))

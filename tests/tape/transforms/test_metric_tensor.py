@@ -81,10 +81,8 @@ class TestMetricTensor:
 
     @pytest.mark.parametrize("diff_method", ["parameter-shift", "backprop"])
     def test_parameter_fan_out(self, diff_method):
-        """The metric tensor is always with respect to the quantum circuit. Any
-        classical processing is not taken into account. As a result, if there is
-        parameter fan-out, the returned metric tensor will be larger than
-        expected.
+        """Test that the classical processing is taken into account during
+        parameter fan-out.
         """
         dev = qml.device("default.qubit", wires=2)
 
@@ -96,7 +94,7 @@ class TestMetricTensor:
         circuit = qml.QNode(circuit, dev, diff_method=diff_method)
         params = [0.1]
         result = qml.metric_tensor(circuit)(*params)
-        assert result.shape == (2, 2)
+        assert result.shape == tuple()
 
     def test_generator_no_expval(self, monkeypatch):
         """Test exception is raised if subcircuit contains an

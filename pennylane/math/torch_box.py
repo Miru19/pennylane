@@ -193,5 +193,16 @@ class TorchBox(qml.math.TensorBox):
 
     @staticmethod
     @wrap_output
+    def tensordot(x, y, axes):
+        x, y = [TorchBox.astensor(t) for t in TorchBox.unbox_list([x, y])]
+        x, y = TorchBox._coerce_types([x, y])
+
+        if not isinstance(axes, int):
+            axes = tuple(list(i) for i in axes)
+
+        return torch.tensordot(x, y, dims=axes)
+
+    @staticmethod
+    @wrap_output
     def where(condition, x, y):
         return torch.where(TorchBox.astensor(condition), *TorchBox.unbox_list([x, y]))

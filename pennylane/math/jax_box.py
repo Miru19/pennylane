@@ -108,5 +108,11 @@ class JaxBox(qml.math.TensorBox):
 
     @staticmethod
     @wrap_output
+    def tensordot(x, y, axes):
+        x, y = JaxBox.unbox_list([x, y])
+        return jnp.tensordot(x, y, axes=axes)
+
+    @staticmethod
+    @wrap_output
     def where(condition, x, y):
         return jnp.where(condition, *JaxBox.unbox_list([x, y]))

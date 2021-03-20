@@ -190,5 +190,12 @@ class TensorFlowBox(qml.math.TensorBox):
 
     @staticmethod
     @wrap_output
+    def tensordot(x, y, axes):
+        x, y = [TensorFlowBox.astensor(t) for t in TensorFlowBox.unbox_list([x, y])]
+        x, y = TensorFlowBox._coerce_types([x, y])
+        return tf.tensordot(x, y, axes=axes)
+
+    @staticmethod
+    @wrap_output
     def where(condition, x, y):
         return tf.where(TensorFlowBox.astensor(condition), *TensorFlowBox.unbox_list([x, y]))
